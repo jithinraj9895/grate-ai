@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 
 public class RabbitMqPublisher
@@ -7,12 +8,12 @@ public class RabbitMqPublisher
     private readonly IConnection _connection;
     private readonly IChannel _channel;
 
-    public RabbitMqPublisher()
+    public RabbitMqPublisher(IConfiguration configuration)
     {
         var factory = new ConnectionFactory
         {
-            HostName = "localhost",
-            Port = 5672
+            HostName = configuration["RabbitMQ:Host"],
+            Port = int.Parse(configuration["RabbitMQ:Port"]!)
         };
 
         _connection = factory.CreateConnectionAsync().Result;

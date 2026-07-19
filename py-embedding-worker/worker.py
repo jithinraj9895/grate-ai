@@ -19,6 +19,31 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+
+def initialize_database():
+
+    with pg_conn.cursor() as cursor:
+
+        # Enable pgvector extension
+        cursor.execute("""
+            CREATE EXTENSION IF NOT EXISTS vector;
+        """)
+
+        # Create embeddings table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS product_embeddings
+            (
+                id SERIAL PRIMARY KEY,
+                product_id UUID UNIQUE NOT NULL,
+                text TEXT NOT NULL,
+                embedding vector(384)
+            );
+        """)
+
+    pg_conn.commit()
+
+    logger.info("Database initialized.")
+
 # -----------------------------
 # Load Embedding Model
 # -----------------------------
@@ -40,6 +65,7 @@ pg_conn = psycopg.connect(
 )
 
 logger.info("Connected to PostgreSQL.")
+initialize_database()
 
 # -----------------------------
 # RabbitMQ Connection
@@ -65,6 +91,9 @@ logger.info("Connected to RabbitMQ.")
 # -----------------------------
 # Message Handler
 # -----------------------------
+
+
+
 def process_message(ch, method, properties, body):
 
     try:

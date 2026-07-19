@@ -70,6 +70,9 @@ builder.Services.AddScoped<DataSeedRepository>();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
+
+
+
 app.UseMiddleware<ExceptionHandling>();
 app.UseSerilogRequestLogging();
 
@@ -78,6 +81,26 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 Log.Information("Started engine !!");
+
+// Apply pending EF Core migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        Log.Information("Checking for pending database migrations...");
+
+        dbContext.Database.Migrate();
+
+        Log.Information("Database is up to date.");
+    }
+    catch (Exception ex)
+    {
+        Log.Fatal(ex, "An error occurred while applying database migrations.");
+        throw;
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
