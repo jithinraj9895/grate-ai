@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="grate.Application/grate.Application.csproj" />
+  <Project Path="grate.Domain/grate.Domain.csproj" />
+  <Project Path="grate.Infra/grate.Infra.csproj" />
+  <Project Path="grate.Tests/grate.Tests.csproj" />
+  <Project Path="grate/grate.csproj" />
+</Solution>
