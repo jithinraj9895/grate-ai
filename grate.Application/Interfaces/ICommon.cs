@@ -10,6 +10,7 @@ public interface ICommon
     Task<List<Product>> GetSearchedProducts(string search);
     Task<int> GetSearchedProductsCount(string search);
     Task<List<Product>> SearchProductsAsync(string name);
+    Task<List<SearchResultDto>> GetSemanticSearchPaginated(string search, int pageNo, int pageSize);
 
     Task<List<Product>> SearchProductWithScroll(string? name,
         int pageSize,

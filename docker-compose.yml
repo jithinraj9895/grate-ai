@@ -24,6 +24,12 @@ services:
     image: pgvector/pgvector:pg17
     container_name: postgres
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vectordb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -96,6 +102,28 @@ services:
       DB_USER: postgres
       DB_PASSWORD: postgres
       MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
+
+  py-semantic-search:
+    build:
+      context: ./py-semantic-search
+      dockerfile: Dockerfile
+
+    container_name: py-semantic-search
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: vectordb
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
+
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   sqlserver_data:

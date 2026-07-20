@@ -64,6 +64,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<RabbitMqPublisher>();
+builder.Services.AddHttpClient<SemanticSearchService>((serviceProvider, client) =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    client.BaseAddress = new Uri(configuration["SemanticSearch:BaseUrl"]!);
+});
 
 builder.Services.AddScoped<ICommon, Common>();
 builder.Services.AddScoped<DataSeedRepository>();

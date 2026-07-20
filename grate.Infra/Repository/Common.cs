@@ -3,7 +3,7 @@ using Domain.Entities;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
-public class Common(AppDbContext context, IADO ado) : ICommon
+public class Common(AppDbContext context, IADO ado, SemanticSearchService searchService) : ICommon
 {
     public async Task<string> CreateBulkProduct(List<CreateProductDto> listOfProducts)
     {
@@ -52,6 +52,17 @@ public class Common(AppDbContext context, IADO ado) : ICommon
         .Skip((pageNo - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return prods;
+    }
+
+    public async Task<List<SearchResultDto>> GetSemanticSearchPaginated(string search, int pageNo, int pageSize)
+    {
+        if (pageNo < 0)
+        {
+            throw new ArgumentOutOfRangeException("Negative number not good as param");
+        }
+        var res = await searchService.SearchAsync(search);
+        var products = res.Results.Skip((pageNo - 1) * pageSize).Take(pageSize).ToList();
+        return products;
     }
 
     public async Task<List<Product>> GetSearchPaginateADO(

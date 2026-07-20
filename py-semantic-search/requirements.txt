@@ -1,4 +1,5 @@
 fastapi
+uvicorn[standard]
 sentence-transformers
 python-dotenv
 psycopg[binary]
