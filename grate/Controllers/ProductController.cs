@@ -166,4 +166,25 @@ public class ProductController(ICommon common, IUnitOfWork unitOfWork, IADO ado,
             PageSize = pageSize
         });
     }
+
+    [HttpGet("semanticA")]
+    public async Task<IActionResult> GetSeachWithSemantic(
+        [FromQuery] string search,
+        [FromQuery] int pageNo,
+        [FromQuery] int pageSize)
+    {
+        var count = await common.GetSearchedProductsCountForSemantic(search);
+        var products = await common.GetSemanticProductsWIthSimilarity(
+            search,
+            pageNo,
+            pageSize);
+
+        return Ok(new
+        {
+            Items = products,
+            TotalCount = count,
+            PageNo = pageNo,
+            PageSize = pageSize
+        });
+    }
 }

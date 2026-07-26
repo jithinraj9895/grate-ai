@@ -46,7 +46,7 @@ export default function SearchPage() {
 
     const pageSize = 300;
 
-    const handleSearch = async (page = 1, append = false) => {
+    const handleSearch = async (page = 1, sematic = false, append = false) => {
         if (!search.trim()) {
             setProducts([]);
             setTotalPages(0);
@@ -56,16 +56,28 @@ export default function SearchPage() {
         try {
             setLoading(true);
 
-            const response = await axios.get(
-                "http://localhost:5050/api/product/searchoptimA",
-                {
-                    params: {
-                        search,
-                        pageNo: page,
-                        pageSize
+            const response = sematic ?
+                await axios.get(
+                    "http://localhost:5050/api/product/semantic",
+                    {
+                        params: {
+                            search,
+                            pageNo: page,
+                            pageSize
+                        }
                     }
-                }
-            );
+                )
+                :
+                await axios.get(
+                    "http://localhost:5050/api/product/searchoptimA",
+                    {
+                        params: {
+                            search,
+                            pageNo: page,
+                            pageSize
+                        }
+                    }
+                );
 
             // ✅ append or replace
             if (append) {
@@ -173,6 +185,16 @@ export default function SearchPage() {
                     >
                         Search
                     </button>
+
+                    <button
+                        className="search-button"
+                        onClick={() => {
+                            setLastScrollPage(1);
+                            handleSearch(1, false);
+                        }}
+                    >
+                        Semantic
+                    </button>
                 </div>
             </div>
 
@@ -193,7 +215,8 @@ export default function SearchPage() {
                         <h3>{product.name}</h3>
 
                         <p className="description">
-                            {product.description}
+                            {product.description}<br></br>
+                            {product.Similarity ?? 0.0}
                         </p>
 
                         <div className="product-footer">

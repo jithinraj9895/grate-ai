@@ -224,4 +224,41 @@ public class Common(AppDbContext context, IADO ado, SemanticSearchService search
             }
         );
     }
+
+    public async Task<List<SemanticProductDto>> GetSemanticProductsWIthSimilarity(string search, int pageNo, int pageSize)
+    {
+        if (pageNo < 0)
+        {
+            throw new ArgumentOutOfRangeException("Negative number not good as param");
+        }
+        var res = await searchService.SearchAsync(search);
+        var productIds = res.Results.Select(r => r.ProductId).ToList();
+
+        var products = await context.Products
+            .AsNoTracking()
+            .Where(p => productIds.Contains(p.Id))
+            .ToListAsync();
+
+        var result = products.Select(p =>
+        {
+            var searchResult = res.Results.First(r => r.ProductId == p.Id);
+
+            return new SemanticProductDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Similarity = searchResult.Similarity
+            };
+        }).ToList();
+
+        return result;
+    }
+
+    public async Task<int> GetSearchedProductsCountForSemantic(string search)
+    {
+        var res = await searchService.SearchAsync(search);
+        return res.Results.Count();
+    }
 }
