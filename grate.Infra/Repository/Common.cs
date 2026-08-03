@@ -253,7 +253,7 @@ public class Common(AppDbContext context, IADO ado, SemanticSearchService search
             };
         }).ToList();
 
-        return result;
+        return result.OrderByDescending(x => x.Similarity).ToList();
     }
 
     public async Task<int> GetSearchedProductsCountForSemantic(string search)

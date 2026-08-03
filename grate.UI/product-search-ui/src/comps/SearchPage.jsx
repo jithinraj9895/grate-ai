@@ -58,7 +58,7 @@ export default function SearchPage() {
 
             const response = sematic ?
                 await axios.get(
-                    "http://localhost:5050/api/product/semantic",
+                    "http://localhost:5050/api/product/semanticA",
                     {
                         params: {
                             search,
@@ -190,7 +190,7 @@ export default function SearchPage() {
                         className="search-button"
                         onClick={() => {
                             setLastScrollPage(1);
-                            handleSearch(1, false);
+                            handleSearch(1, true, false);
                         }}
                     >
                         Semantic
@@ -216,7 +216,6 @@ export default function SearchPage() {
 
                         <p className="description">
                             {product.description}<br></br>
-                            {product.Similarity ?? 0.0}
                         </p>
 
                         <div className="product-footer">
@@ -225,7 +224,8 @@ export default function SearchPage() {
                             </span>
 
                             <span>
-                                Stock: {product.stockQuantity}
+                                Stock: {product.stockQuantity} <br></br>
+                                Similarity: {(product.similarity ?? 0).toFixed(2)}
                             </span>
                         </div>
                     </div>
