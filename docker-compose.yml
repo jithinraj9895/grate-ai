@@ -70,6 +70,9 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      py-semantic-search:
+        condition: service_started
+      
 
     ports:
       - "5000:8080"
@@ -79,6 +82,7 @@ services:
       ConnectionStrings__SqlServerConnection: Server=sqlserver;Database=GrateDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True
       RabbitMQ__Host: rabbitmq
       RabbitMQ__Port: 5672
+      SemanticSearch__BaseUrl: http://py-semantic-search:8000/
 
   embedding-worker:
     build:
@@ -124,6 +128,22 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
+  react-ui:
+    build:
+      context: ./grate.UI/product-search-ui
+
+    container_name: react-ui
+
+    ports:
+      - "5173:5173"
+
+    depends_on:
+      api:
+        condition: service_started
+
+    environment:
+      VITE_API_URL: http://localhost:5000
 
 volumes:
   sqlserver_data:

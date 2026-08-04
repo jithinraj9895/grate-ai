@@ -45,6 +45,7 @@ export default function SearchPage() {
     const [lastScrollPage, setLastScrollPage] = useState(1);
 
     const pageSize = 300;
+    const api = import.meta.env.VITE_API_URL;
 
     const handleSearch = async (page = 1, sematic = false, append = false) => {
         if (!search.trim()) {
@@ -58,7 +59,7 @@ export default function SearchPage() {
 
             const response = sematic ?
                 await axios.get(
-                    "http://localhost:5050/api/product/semanticA",
+                    `${api}/api/product/semanticA`,
                     {
                         params: {
                             search,
@@ -69,7 +70,7 @@ export default function SearchPage() {
                 )
                 :
                 await axios.get(
-                    "http://localhost:5050/api/product/searchoptimA",
+                    `${api}/api/product/searchoptimA`,
                     {
                         params: {
                             search,
