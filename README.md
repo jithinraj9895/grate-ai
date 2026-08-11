@@ -1,3 +1,15 @@
+# How to Run with Docker
+Open Command Prompt or a terminal in the project root folder.
+Run the following command:
+```bash
+docker compose up --build
+```
+Wait for the containers to build and start.
+
+That's it! The application is now running.
+
+
+
 # Ever wondered how a distributed system works? Me neither.
 
 I was just practicing my .NET skills for an interview.
